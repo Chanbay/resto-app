@@ -78,28 +78,27 @@ public class Main {
     public static void tampilkanMenu(Menu[] daftarMenu) {
         System.out.println("\n========== MENU RESTORAN ==========");
 
-        String kategoriSebelumnya = "";
+        String[] kategori = {"Makanan", "Minuman"};
 
-        for (int i = 0; i < daftarMenu.length; i++) {
-            Menu menu = daftarMenu[i];
+        int nomorMenu = 1;
 
-            if (menu == null) {
-                continue;
+        for (String jenis : kategori) {
+
+            System.out.println("\n======= " + jenis.toUpperCase() + " =======");
+
+            for (int i = 0; i < daftarMenu.length; i++) {
+
+                if (daftarMenu[i].kategori.equalsIgnoreCase(jenis)) {
+
+                    System.out.println(
+                        nomorMenu + ". " +
+                        daftarMenu[i].nama +
+                        " - Rp. " + daftarMenu[i].harga +
+                        (daftarMenu[i].isB1G1 ? " [B1G1]" : "")
+                    );
+                    nomorMenu++;
+                }
             }
-
-            if (!menu.kategori.equalsIgnoreCase(kategoriSebelumnya)) {
-                System.out.println(
-                    "\n--- " + menu.kategori.toUpperCase() + " ---"
-                );
-
-                kategoriSebelumnya = menu.kategori;
-            }
-
-            System.out.println(
-                (i + 1) + ". " + menu.nama
-                + " - Rp. " + menu.harga
-                + (menu.isB1G1 ? " [Promo B1G1]" : "")
-            );
         }
 
         System.out.println("===================================");
@@ -107,27 +106,28 @@ public class Main {
     }
 
     public static Menu pilihMenu(int nomor) {
-        switch (nomor) {
-            case 1:
-                return Menu.daftarMenu[0];
-            case 2:
-                return Menu.daftarMenu[1];
-            case 3:
-                return Menu.daftarMenu[2];
-            case 4:
-                return Menu.daftarMenu[3];
-            case 5:
-                return Menu.daftarMenu[4];
-            case 6:
-                return Menu.daftarMenu[5];
-            case 7:
-                return Menu.daftarMenu[6];
-            case 8:
-                return Menu.daftarMenu[7];
-            default:
-                return null;
+        String[] kategori = {"Makanan", "Minuman"};
+
+        int nomorMenu = 1;
+
+        for (String jenis : kategori) {
+
+            for (Menu menu : Menu.daftarMenu) {
+
+                if (menu.kategori.equalsIgnoreCase(jenis)) {
+
+                    if (nomorMenu == nomor) {
+                        return menu;
+                    }
+
+                    nomorMenu++;
+                }
+            }
         }
+
+        return null;
     }
+
     public static void prosesPembayaran(Pesanan[] daftarPesanan, int jumlahMaksimal) {
         int nomorPesanan = 0;
         int subTotal = 0;

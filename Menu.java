@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Menu {
     String nama;
     int harga;
@@ -27,7 +29,37 @@ public class Menu {
             Main.tampilkanMenu(daftarMenu);
 
             System.out.println("\n======= UBAH DATA MENU =======");
+            System.out.println("1. Ubah Data Menu");
+            System.out.println("2. Tambah Menu Baru");
             System.out.println("0. Kembali ke menu utama");
+            System.out.print("Pilihan: ");
+
+            String teksPilihan = Main.input.nextLine();
+
+            switch (teksPilihan) {
+                case "1":
+                    ubahMenuYangAda();
+                    break;
+
+                case "2":
+                    daftarMenu = tambahMenu(daftarMenu);
+                    break;
+
+                case "0":
+                    return;
+
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        }
+    }
+
+    public static void ubahMenuYangAda() {
+        while (true) {
+            Main.tampilkanMenu(daftarMenu);
+
+            System.out.println("\n======= UBAH DATA MENU =======");
+            System.out.println("0. Kembali");
             System.out.print("Pilih nomor menu yang ingin diubah: ");
 
             String teksNomor = Main.input.nextLine();
@@ -49,7 +81,12 @@ public class Menu {
                 continue;
             }
 
-            Menu menu = daftarMenu[nomor - 1];
+            Menu menu = cariMenu(nomor);
+
+            if (menu == null) {
+                System.out.println("Nomor menu tidak valid.");
+                continue;
+            }
 
             while (true) {
                 System.out.println("\nData menu saat ini:");
@@ -167,5 +204,103 @@ public class Menu {
                 }
             }
         }
+    }
+    public static Menu[] tambahMenu(Menu[] daftarMenu) {
+
+        Scanner input = Main.input;
+
+        System.out.println("\n=== TAMBAH MENU BARU ===");
+
+        System.out.print("Nama menu: ");
+        String nama = input.nextLine();
+
+        System.out.print("Harga menu: ");
+        int harga = input.nextInt();
+        input.nextLine();
+
+        System.out.println("Pilih kategori:");
+        System.out.println("1. Makanan");
+        System.out.println("2. Minuman");
+        System.out.print("Pilihan kategori: ");
+
+        String pilihanKategori = input.nextLine();
+
+        String kategori;
+
+        switch (pilihanKategori) {
+            case "1":
+                kategori = "Makanan";
+                break;
+
+            case "2":
+                kategori = "Minuman";
+                break;
+
+            default:
+                System.out.println("Kategori tidak valid.");
+                return daftarMenu;
+        }
+
+
+        System.out.println("Pilih status promo:");
+        System.out.println("1. Aktif (B1G1)");
+        System.out.println("2. Tidak Aktif");
+        System.out.print("Pilihan: ");
+
+        String pilihanPromo = input.nextLine();
+
+        boolean isB1G1;
+
+        switch (pilihanPromo) {
+            case "1":
+                isB1G1 = true;
+                break;
+
+            case "2":
+                isB1G1 = false;
+                break;
+
+            default:
+                System.out.println("Pilihan promo tidak valid.");
+                return daftarMenu;
+        }
+
+        Menu[] menuBaru = new Menu[daftarMenu.length + 1];
+
+        for (int i = 0; i < daftarMenu.length; i++) {
+            menuBaru[i] = daftarMenu[i];
+        }
+
+        menuBaru[daftarMenu.length] =
+            new Menu(nama, harga, kategori, isB1G1);
+
+        System.out.println("\nMenu berhasil ditambahkan!");
+
+        return menuBaru;
+        
+    }
+
+    public static Menu cariMenu(int nomor) {
+
+        String[] kategori = {"Makanan", "Minuman"};
+
+        int nomorMenu = 1;
+
+        for (String jenis : kategori) {
+
+            for (Menu menu : daftarMenu) {
+
+                if (menu.kategori.equalsIgnoreCase(jenis)) {
+
+                    if (nomorMenu == nomor) {
+                        return menu;
+                    }
+
+                    nomorMenu++;
+                }
+            }
+        }
+
+        return null;
     }
 }
