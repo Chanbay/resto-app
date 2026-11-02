@@ -76,17 +76,33 @@ public class Main {
     }   
 
     public static void tampilkanMenu(Menu[] daftarMenu) {
-        System.out.println("======= MENU RESTORAN =======");
-        System.out.println("       --- MAKANAN ---");
-        System.out.println("1. " + daftarMenu[0].nama +  " - Rp. " + daftarMenu[0].harga);
-        System.out.println("2. " + daftarMenu[1].nama +  " - Rp. " + daftarMenu[1].harga);
-        System.out.println("3. " + daftarMenu[2].nama +  " - Rp. " + daftarMenu[2].harga);
-        System.out.println("4. " + daftarMenu[3].nama +  " - Rp. " + daftarMenu[3].harga);
-        System.out.println("       --- MINUMAN ---");
-        System.out.println("5. " + daftarMenu[4].nama +  " - Rp. " + daftarMenu[4].harga);
-        System.out.println("6. " + daftarMenu[5].nama +  " - Rp. " + daftarMenu[5].harga);
-        System.out.println("7. " + daftarMenu[6].nama +  " - Rp. " + daftarMenu[6].harga);
-        System.out.println("8. " + daftarMenu[7].nama +  " - Rp. " + daftarMenu[7].harga);
+        System.out.println("\n========== MENU RESTORAN ==========");
+
+        String kategoriSebelumnya = "";
+
+        for (int i = 0; i < daftarMenu.length; i++) {
+            Menu menu = daftarMenu[i];
+
+            if (menu == null) {
+                continue;
+            }
+
+            if (!menu.kategori.equalsIgnoreCase(kategoriSebelumnya)) {
+                System.out.println(
+                    "\n--- " + menu.kategori.toUpperCase() + " ---"
+                );
+
+                kategoriSebelumnya = menu.kategori;
+            }
+
+            System.out.println(
+                (i + 1) + ". " + menu.nama
+                + " - Rp. " + menu.harga
+                + (menu.isB1G1 ? " [Promo B1G1]" : "")
+            );
+        }
+
+        System.out.println("===================================");
 
     }
 
@@ -237,18 +253,72 @@ public class Main {
                 System.out.println("Anda sudah mencapai batas pemesanan (" + nomorPesanan + "/"+ jumlahMaksimal +")");
             }
         }
+        if (nomorPesanan == 0) {
+            System.out.println("\nTidak ada pesanan yang dibuat.");
+            System.out.println("Kembali ke menu utama...");
+            return;
+        }
     }
 
     public static void main(String[] args) {
 
         System.out.println("Program restoran dimulai");
 
-        int jumlahMaksimal = 4;
+        while (true) {
+            System.out.println("\n================================");
+            System.out.println("          MENU UTAMA");
+            System.out.println("================================");
+            System.out.println("1. Proses Pemesanan");
+            System.out.println("2. Ubah Data Daftar Menu");
+            System.out.println("0. Keluar");
+            System.out.println("================================");
+            System.out.print("Pilih menu: ");
 
-        Pesanan[] daftarPesanan = new Pesanan[jumlahMaksimal];
+            String teksPilihan = input.nextLine();
 
-        prosesPemesanan(daftarPesanan, jumlahMaksimal);
-        
-        prosesPembayaran(daftarPesanan, jumlahMaksimal);
+            int pilihan;
+
+            try {
+                pilihan = Integer.parseInt(teksPilihan);
+            } catch (NumberFormatException e) {
+                System.out.println("Input harus berupa angka.");
+                continue;
+            }
+
+            switch (pilihan) {
+                case 1:
+                    int jumlahMaksimal = 4;
+
+                    Pesanan[] daftarPesanan =
+                        new Pesanan[jumlahMaksimal];
+
+                    prosesPemesanan(
+                        daftarPesanan,
+                        jumlahMaksimal
+                    );
+
+                    if (daftarPesanan[0] != null) {
+                        prosesPembayaran(daftarPesanan, jumlahMaksimal);
+                    }
+                    break;
+
+                case 2:
+                    Menu.ubahDataMenu();
+                    break;
+
+                case 0:
+                    System.out.println(
+                        "Terima kasih telah menggunakan program restoran."
+                    );
+
+                    input.close();
+                    return;
+
+                default:
+                    System.out.println(
+                        "Pilihan tidak valid. Silakan coba lagi."
+                    );
+            }
+        }
     }
 }
